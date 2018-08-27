@@ -1,0 +1,73 @@
+<!doctype html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<title>Passwordless User Authentication System with PHP, MetaMask and Vue.js</title>
+	<meta name="description" content="Login system for web app, built using MetaMask, PHP, MySQL, JWT and Vue.js">
+
+	<link rel="stylesheet" href="css/main.css">
+	
+	<script src="https://unpkg.com/vue@2.5.17/dist/vue.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="content">
+
+		<div id="app">
+
+			<div class="block">
+				<span style="font-size:18px;">
+					<b>Passwordless User Authentication System</b>
+					<br>
+					PHP, Vue, MySQL, MetaMask
+				</span>
+			</div>
+
+			<div class="block" style="margin-top:100px;">
+				<div v-show="state == 'loggedOut'">
+					Click the button to (sign up and) login!
+				</div>
+				<div v-show="state == 'needMetamask'" class="msg-info">
+					To login, first install <a href="https://metamask.io/" style="color:#ff7300" target="_blank">MetaMask</a> browser extension
+				</div>
+				<div v-show="state == 'mobileDevice'" class="msg-info">
+					This login system doesn't work on mobiles because it requires <a href="https://metamask.io/" style="color:#ff7300" target="_blank">MetaMask</a> browser extension
+				</div>
+				<div v-show="state == 'needLogInToMetaMask'" class="msg-info">
+					Log in to your MetaMask account first!
+				</div>
+				<div v-show="state == 'signTheMessage'">
+					Sign the message in MetaMask to authenticate
+				</div>
+				<div v-show="state == 'loggedIn'">
+						Successful authentication for address:<br>{{ ethAddress }}
+						<br><br>
+						You can set a public name for this account:<br>
+						<input type="text" placeholder="Public name" v-model.lazy="updatePublicName">
+				</div>
+				<br>
+				<button v-on:click="logInOut">{{ buttonText }}</button>
+			</div>
+
+			<div class="block" style="margin-top:100px;">		
+				<a href="https://github.com/dziungles/php-metamask-user-login" target="_blank">
+					GitHub
+				</a>
+			</div>
+
+		</div>
+
+</div>
+
+
+<script src="js/main.js"></script>
+
+</body>
+
+</html>

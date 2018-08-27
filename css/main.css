@@ -1,0 +1,49 @@
+html {
+  color: #222;
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+body {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.msg-info {
+  color: rgb(255, 115, 0);
+}
+
+a, a:link, a:visited, a:active, a:hover {
+  color: rgb(68, 96, 140);
+}
+
+.link {
+  color: rgb(68, 96, 140);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+button {
+  font-size: 14px; 
+  padding: 4px 15px 4px 13px;
+  margin-bottom: 5px;
+  background-color: rgb(134, 134, 134);
+  border-color: rgb(170, 170, 170);
+  color: white;
+}
+
+button:focus {
+  outline:0;
+}
+
+.content {
+  margin: 0 auto;
+  max-width: 600px;
+  margin-top: 100px;
+}
+
+.block {
+  margin: 20px 0px 20px 0px;
+  text-align: center;
+  word-wrap:break-word;
+  position:relative;
+}
