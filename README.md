@@ -8,7 +8,7 @@ This is similar to CryptoKitties passwordless user login but made with PHP inste
 
 The concept of such user authentication system (initially based on [this article](https://hackernoon.com/never-use-passwords-again-with-ethereum-and-metamask-b61c7e409f0d)) is as follows: The backend provides a random message for the user to sign it with his or her MetaMask wallet. The signed message is then returned to the backend, together with the user's public Ethereum address. Having the `message`, the `same message signed by the user` and user's `public address`, the backend can perform some cryptographic magic in order to know if the message was signed with the same private key to which the `public address` belongs. The `public address` also works as a username to identify the user's account. If the `signed message` and `public address` belong to the same private key, it means that the user who is trying to log in is also the owner of the account.
 
-After the successful validation, the backend creates a JSON Web Token (JWT) and sends it to the frontend to authenticate the user.
+After the successful validation, the backend creates a JSON Web Token (JWT) and sends it to the frontend to authenticate the further user requests.
 
 The "Public name" input field (visible after the successful login) is just an example showing how to update user's metadata using JWT. When entered by the user, this field is stored in the db and loaded the next time the user logs in.
 
