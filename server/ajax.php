@@ -85,6 +85,11 @@ if ($request == "auth") {
     $result = mysqli_fetch_object($result);
     $publicName = $result->publicName;
 
+    // Create a new random nonce for the next login
+    $nonce = uniqid();
+    $sql = "UPDATE users SET nonce = '".$nonce."' WHERE address = '".$address."'";
+    $conn->query($sql);
+
     // Create JWT Token
     $token = array();
     $token['address'] = $address;
