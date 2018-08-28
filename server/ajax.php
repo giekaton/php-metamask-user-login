@@ -18,30 +18,36 @@ $request = $data->request;
 if ($request == "login") {
   $address = $data->address;
 
-  $sql = "SELECT nonce FROM users WHERE address = '".$address."'";
-  $result = $conn->query($sql);
+  // Prepared statement to protect against SQL injections
+  $stmt = $conn->prepare("SELECT nonce FROM users WHERE address = ?");
+  $stmt->bind_param("s", $address);
+  $stmt->execute();
+  $stmt->bind_result($nonce);
+  $stmt->fetch();
+  $stmt->close();
 
-  if ($result->num_rows > 0) {
-
-    // If user exists, return nonce
-    $result = mysqli_fetch_object($result);
-    echo("Sign this message to validate that you are the owner of the account. Random string: " . $result->nonce);
-
-  } else {
-
-    // If user doesn't exist, register new user with generated nonce, then return nonce
+  if ($nonce) {
+    // If user exists, return message to sign
+    echo("Sign this message to validate that you are the owner of the account. Random string: " . $nonce);
+  }
+  else {
+    // If user doesn't exist, register new user with generated nonce, then return message to sign
     $nonce = uniqid();
-    $sql = "INSERT INTO users (address, nonce) VALUES ('".$address."', '".$nonce."')";
 
-    if ($conn->query($sql) === TRUE) {
+    // Prepared statement to protect against SQL injections
+    $stmt = $conn->prepare("INSERT INTO users (address, nonce) VALUES (?, ?)");
+    $stmt->bind_param("ss", $address, $nonce);
+
+    if ($stmt->execute() === TRUE) {
       echo ("Sign this message to validate that you are the owner of the account. Random string: " . $nonce);
     } else {
-      echo "Error: " . $conn->error;
+      echo "Error" . $stmt->error;
     }
 
+    $stmt->close();
+    $conn->close();
   }
-  
-  $conn->close();
+
   exit;
 
 }
@@ -50,40 +56,46 @@ if ($request == "login") {
 if ($request == "auth") {
   $address = $data->address;
   $signature = $data->signature;
-  
-  $sql = "SELECT nonce FROM users WHERE address = '".$address."'";
-  $result = $conn->query($sql);
-  if ($result->num_rows > 0) {
-    $result = mysqli_fetch_object($result);
-    $nonce = $result->nonce;
+
+  // Prepared statement to protect against SQL injections
+  if($stmt = $conn->prepare("SELECT nonce FROM users WHERE address = ?")) {
+    $stmt->bind_param("s", $address);
+    $stmt->execute();
+    $stmt->bind_result($nonce);
+    $stmt->fetch();
+    $stmt->close();
+
     $message = "Sign this message to validate that you are the owner of the account. Random string: " . $nonce;
   }
 
+  // Check if the message was signed with the same private key to which the public address belongs
   function pubKeyToAddress($pubkey) {
     return "0x" . substr(Keccak::hash(substr(hex2bin($pubkey->encode("hex")), 1), 256), 24);
   }
-  
+
   function verifySignature($message, $signature, $address) {
     $msglen = strlen($message);
     $hash   = Keccak::hash("\x19Ethereum Signed Message:\n{$msglen}{$message}", 256);
-    $sign   = ["r" => substr($signature, 2, 64), 
+    $sign   = ["r" => substr($signature, 2, 64),
                "s" => substr($signature, 66, 64)];
-    $recid  = ord(hex2bin(substr($signature, 130, 2))) - 27; 
-    if ($recid != ($recid & 1)) 
+    $recid  = ord(hex2bin(substr($signature, 130, 2))) - 27;
+    if ($recid != ($recid & 1))
         return false;
-  
+
     $ec = new EC('secp256k1');
     $pubkey = $ec->recoverPubKey($hash, $sign, $recid);
-  
+
     return $address == pubKeyToAddress($pubkey);
   }
-  
+
+  // If verification passed, authenticate user
   if (verifySignature($message, $signature, $address)) {
 
     $sql = "SELECT publicName FROM users WHERE address = '".$address."'";
     $result = $conn->query($sql);
     $result = mysqli_fetch_object($result);
     $publicName = $result->publicName;
+    $publicName = htmlspecialchars($publicName, ENT_QUOTES, 'UTF-8');
 
     // Create a new random nonce for the next login
     $nonce = uniqid();
@@ -114,12 +126,15 @@ if ($request == "updatePublicName") {
   try { $JWT = JWT::decode($data->JWT, $GLOBALS['JWT_secret']); }
   catch (\Exception $e) { echo 'Authentication error'; exit; }
 
-  $sql = "UPDATE users SET publicName = '".$publicName."' WHERE address = '".$address."'";
+  // Prepared statement to protect against SQL injections
+  $stmt = $conn->prepare("UPDATE users SET publicName = ? WHERE address = '".$address."'");
+  $stmt->bind_param("s", $publicName);
 
-  if ($conn->query($sql) === TRUE) {
-    echo("Public name updated");
+  if ($stmt->execute() === TRUE) {
+    echo "Public name updated";
   }
-  
+
+  $stmt->close();
   $conn->close();
   exit;
 
