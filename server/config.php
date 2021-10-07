@@ -2,8 +2,8 @@
 
 $servername = "localhost";
 $username = "root";
-$password = "";
-$dbname = "passwordless_login";
+$password = "root";
+$dbname = "contributions_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
