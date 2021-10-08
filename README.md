@@ -23,6 +23,10 @@ To launch the demo app provided in this repository, first download all files. Th
 
 This will download the appropriate images and build an environment in docker.  
 
+Configure your computer's IP in `php/src/server/config.php`
+
+`$servername = "192.168.1.148";`
+
 Finally, open `http://localhost:8000/server/create_db_table.php` in your browser to build the database table. Then open `http://localhost:8000/index.html` to test the app.
 
 This also includes phpMyAdmin for quick viewing of the table used by the app.
