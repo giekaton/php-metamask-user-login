@@ -14,6 +14,11 @@ require_once('config.php');
 $data = json_decode(file_get_contents("php://input"));
 $request = $data->request;
 
+// Create a standard of eth address by lowercasing them
+// Some wallets send address with upper and lower case characters
+if (!empty($data->address)) {
+  $data->address = strtolower($data->address);
+}
 
 if ($request == "login") {
   $address = $data->address;
