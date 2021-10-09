@@ -1,13 +1,23 @@
 <?php 
 
+$servertype = "pgsql"; // mysql, pgsql
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "passwordless_login";
+$serverport = 5432; // mysql: 3306, pgsql: 5432
+$username = "username";
+$password = "password";
+$dbname = "dbname";
+$tablename = "tablename";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+try {
+        if ($servertype == "pgsql") {
+                $dsn = "pgsql:host=$servername;port=$serverport;dbname=$dbname;";
+        } elseif ($servertype == "mysql") {
+                $dsn = "mysql:host=$servername;port=$serverport;dbname=$dbname;";
+        } else {
+                die ('DB config error');
+        }
+        $conn = new PDO($dsn, $username, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+}
+catch (PDOException $e) {
+        die($e->getMessage());
 }
