@@ -1,4 +1,4 @@
-#### Passwordless user authentication system for web apps using MetaMask with PHP, Vue.js, JWT and MySQL ####
+#### Passwordless user authentication system for web apps using MetaMask with PHP, Vue.js, JWT and MySQL/PostgreSQL ####
 
 Demo: https://setinblock.com/php-metamask-user-login
 <br>
@@ -17,7 +17,8 @@ The cryptographic magic mentioned above is done using [Elliptic Curve Cryptograp
 <br>
 ### Quick launch
 
-To launch the demo app provided in this repository, first download all files. Then put them in your remote or local PHP + MySQL server's public html directory. Create an empty mysql database, edit credentials in `server/config.php` and then open `create_db_table.php` in your browser. Then open `index.html`.
+To launch the demo app provided in this repository, first download all files. Then put them in your remote or local PHP + MySQL/PostgreSQL server's public html directory.
+Create an empty database, edit credentials in `server/config.php` and then open `create_db_table.php` in your browser. Then open `index.html`.
 <br>
 <br>
 ### Issues
