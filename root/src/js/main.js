@@ -10,10 +10,12 @@ var app = new Vue({
   },
   methods: {
     logInOut: async function() {
-      if (window.web3) {
-        window.web3 = new Web3(ethereum);
+      if(this.state == "loggedOut") {
+        await onConnectLoadWeb3Modal();
+      }
+      if (web3ModalProv) {
+        window.web3 = web3ModalProv;
         try {
-          this.accounts = await ethereum.enable();
           this.login();
         } catch (error) {
           console.log(error);
@@ -34,16 +36,13 @@ var app = new Vue({
         vm.buttonText = "Log in";
         return;
       }
-      if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-        vm.state = "mobileDevice";
-        return;
-      }
       if (typeof window.web3 === "undefined") {
         vm.state = "needMetamask";
         return;
       }
-      let accountsOnEnable = await ethereum.request({method: 'eth_requestAccounts'});
+      let accountsOnEnable = await web3.eth.getAccounts();
       let address = accountsOnEnable[0];
+      address = address.toLowerCase();
       if (address == null) {
         vm.state = "needLogInToMetaMask";
         return;
@@ -95,6 +94,8 @@ var app = new Vue({
                   vm.ethAddress = address;
                   vm.publicName = response.data[1];
                   vm.JWT = response.data[2];
+                  // Clear Web3 wallets data for logout
+                  localStorage.clear();
                 }
               })
               .catch(function(error) {
@@ -144,8 +145,9 @@ var app = new Vue({
       ethereum.on('accountsChanged', (_chainId) => ethNetworkUpdate());
 
       async function ethNetworkUpdate() {      
-        let accountsOnEnable = await ethereum.request({method: 'eth_requestAccounts'});
+        let accountsOnEnable = await web3.eth.getAccounts();
         let address = accountsOnEnable[0];
+        address = address.toLowerCase();
         if (vm.ethAddress != address) {
           vm.ethAddress = address;
           if (vm.state == "loggedIn") {

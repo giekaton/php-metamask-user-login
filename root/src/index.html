@@ -11,11 +11,13 @@
 
 		<link rel="stylesheet" href="css/main.css">
 		
-		
 		<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 		<script src="https://unpkg.com/vue@2.5.17/dist/vue.min.js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+		<script type="text/javascript" src="https://unpkg.com/web3modal@1.9.0/dist/index.js"></script>
+		<script type="text/javascript" src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
+		<script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"></script>
 	</head>
 
 	<body>
@@ -37,16 +39,13 @@
 						Click the button to (sign up and) login!
 					</div>
 					<div v-show="state == 'needMetamask'" class="msg-info">
-						To login, first install the <a href="https://metamask.io/" style="color:#ff7300" target="_blank">MetaMask</a> browser extension
-					</div>
-					<div v-show="state == 'mobileDevice'" class="msg-info">
-						This login system doesn't work on mobiles because it requires <a href="https://metamask.io/" style="color:#ff7300" target="_blank">MetaMask</a> browser extension
+						To login, first install a Web3 wallet like the <a href="https://metamask.io/" style="color:#ff7300" target="_blank">MetaMask</a> browser extension or mobile app
 					</div>
 					<div v-show="state == 'needLogInToMetaMask'" class="msg-info">
-						Log in to your MetaMask account first!
+						Log in to your wallet account first!
 					</div>
 					<div v-show="state == 'signTheMessage'">
-						Sign the message in MetaMask to authenticate
+						Sign the message with your wallet to authenticate
 					</div>
 					<div v-show="state == 'loggedIn'">
 						Successful authentication for address:<br>{{ ethAddress }}
@@ -68,14 +67,8 @@
 
 		</div>
 
-
-		<script>
-			if (window.web3) {
-				const web3 = new Web3(window.web3.currentProvider);
-			} 
-		</script>
-
 		<script src="js/main.js?v=003"></script>
+		<script src="js/web3-modal.js"></script>
 
 	</body>
 
