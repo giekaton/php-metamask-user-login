@@ -1,4 +1,4 @@
-#### Passwordless user authentication system for web apps using MetaMask with PHP, Vue.js, JWT and MySQL/PostgreSQL ####
+#### Passwordless user authentication system for web apps using MetaMask with PHP, JWT and MySQL/PostgreSQL ####
 
 Demo: https://setinblock.com/php-metamask-user-login
 <br>
