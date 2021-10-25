@@ -1,166 +1,200 @@
-var app = new Vue({
-  el: "#app",
-  data: {
-    state: "loggedOut",
-    ethAddress: "",
-    buttonText: "Log in",
-    publicName: "",
-    JWT: "",
-    config: { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-  },
-  methods: {
-    logInOut: async function() {
-      if(this.state == "loggedOut") {
-        await onConnectLoadWeb3Modal();
-      }
-      if (web3ModalProv) {
-        window.web3 = web3ModalProv;
-        try {
-          this.login();
-        } catch (error) {
-          console.log(error);
-          this.state = 'needLogInToMetaMask';
-          return;
-        }
-      }
-      else {
-        this.state = 'needMetamask';
-        return;
-      }
-    },
-    login: async function() {
-      var vm = this;
-      if (vm.state == "loggedIn") {
-        vm.state = "loggedOut";
-        vm.JWT = "";
-        vm.buttonText = "Log in";
-        return;
-      }
-      if (typeof window.web3 === "undefined") {
-        vm.state = "needMetamask";
-        return;
-      }
-      let accountsOnEnable = await web3.eth.getAccounts();
-      let address = accountsOnEnable[0];
-      address = address.toLowerCase();
-      if (address == null) {
-        vm.state = "needLogInToMetaMask";
-        return;
-      }
-      vm.state = "signTheMessage";
+let userLoginData = {
+  state: "loggedOut",
+  ethAddress: "",
+  buttonText: "Log in",
+  publicName: "",
+  JWT: "",
+  config: { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+}
 
-      axios.post(
-        "server/ajax.php",
-        {
-          request: "login",
-          address: address
-        },
-        vm.config
-      )
-      .then(function(response) {
-        if (response.data.substring(0, 5) != "Error") {
-          let message = response.data;
-          let publicAddress = address;
-          handleSignMessage(message, publicAddress).then(handleAuthenticate);
 
-          function handleSignMessage(message, publicAddress) {
-            return new Promise((resolve, reject) =>  
-              web3.eth.personal.sign(
-                web3.utils.utf8ToHex(message),
-                publicAddress,
-                (err, signature) => {
-                  if (err) vm.state = "loggedOut";
-                  return resolve({ publicAddress, signature });
-                }
-              )
-            );
-          }
+if (window.web3) {
+  ethereum.on('accountsChanged', (_chainId) => ethNetworkUpdate());
 
-          function handleAuthenticate({ publicAddress, signature }) {
-            axios
-              .post(
-                "server/ajax.php",
-                {
-                  request: "auth",
-                  address: arguments[0].publicAddress,
-                  signature: arguments[0].signature
-                },
-                vm.config
-              )
-              .then(function(response) {
-                if (response.data[0] == "Success") {
-                  vm.state = "loggedIn";
-                  vm.buttonText = "Log out";
-                  vm.ethAddress = address;
-                  vm.publicName = response.data[1];
-                  vm.JWT = response.data[2];
-                  // Clear Web3 wallets data for logout
-                  localStorage.clear();
-                }
-              })
-              .catch(function(error) {
-                console.error(error);
-              });
-          }
-        } 
-        else {
-          console.log("Error: " + response.data);
-        }
-      })
-      .catch(function(error) {
-        console.error(error);
-      });
+  async function ethNetworkUpdate() {      
+    let accountsOnEnable = await web3.eth.getAccounts();
+    let address = accountsOnEnable[0];
+    address = address.toLowerCase();
+    if (userLoginData.ethAddress != address) {
+      userLoginData.ethAddress = address;
+      showAddress();
+      if (userLoginData.state == "loggedIn") {
+        userLoginData.JWT = "";
+        userLoginData.state = "loggedOut";
+        userLoginData.buttonText = "Log in";
+      }
     }
-  },
-  computed: {
-    updatePublicName: {
-      get() {
-        return this.publicName;
-      },
-      set(value) {
+    if (userLoginData.ethAddress != null && userLoginData.state == "needLogInToMetaMask") {
+      userLoginData.state = "loggedOut";
+    }
+  }
+}
+
+
+// Show current msg
+function showMsg(id) {
+  let x = document.getElementsByClassName("msg");
+  let i;
+  for (i = 0; i < x.length; i++) {
+      x[i].style.display = 'none';
+  }
+  document.getElementById(id).style.display = 'block';
+}
+showMsg(userLoginData.state);
+
+
+// Show current address
+function showAddress() {
+  document.getElementById('ethAddress').innerHTML = userLoginData.ethAddress;
+}
+
+
+// Show current button text
+function showButtonText() {
+  document.getElementById('buttonText').innerHTML = userLoginData.buttonText;
+}
+showButtonText();
+
+
+async function userLoginOut() {
+  if(userLoginData.state == "loggedOut") {
+    await onConnectLoadWeb3Modal();
+  }
+  if (web3ModalProv) {
+    window.web3 = web3ModalProv;
+    try {
+      userLogin();
+    } catch (error) {
+      console.log(error);
+      userLoginData.state = 'needLogInToMetaMask';
+      showMsg(userLoginData.state);
+      return;
+    }
+  }
+  else {
+    userLoginData.state = 'needMetamask';
+    return;
+  }
+}
+
+
+async function userLogin() {
+  if (userLoginData.state == "loggedIn") {
+    userLoginData.state = "loggedOut";
+    showMsg(userLoginData.state);
+    userLoginData.JWT = "";
+    userLoginData.buttonText = "Log in";
+    showButtonText();
+    return;
+  }
+  if (typeof window.web3 === "undefined") {
+    userLoginData.state = "needMetamask";
+    showMsg(userLoginData.state);
+    return;
+  }
+  let accountsOnEnable = await web3.eth.getAccounts();
+  let address = accountsOnEnable[0];
+  address = address.toLowerCase();
+  if (address == null) {
+    userLoginData.state = "needLogInToMetaMask";
+    showMsg(userLoginData.state);
+    return;
+  }
+  userLoginData.state = "signTheMessage";
+  showMsg(userLoginData.state);
+
+  axios.post(
+    "server/ajax.php",
+    {
+      request: "login",
+      address: address
+    },
+    userLoginData.config
+  )
+  .then(function(response) {
+    if (response.data.substring(0, 5) != "Error") {
+      let message = response.data;
+      let publicAddress = address;
+      handleSignMessage(message, publicAddress).then(handleAuthenticate);
+
+      function handleSignMessage(message, publicAddress) {
+        return new Promise((resolve, reject) =>  
+          web3.eth.personal.sign(
+            web3.utils.utf8ToHex(message),
+            publicAddress,
+            (err, signature) => {
+              if (err) {
+                userLoginData.state = "loggedOut";
+                showMsg(userLoginData.state);
+              }
+              return resolve({ publicAddress, signature });
+            }
+          )
+        );
+      }
+
+      function handleAuthenticate({ publicAddress, signature }) {
         axios
           .post(
             "server/ajax.php",
             {
-              request: "updatePublicName",
-              address: this.ethAddress,
-              JWT: this.JWT,
-              publicName: value
+              request: "auth",
+              address: arguments[0].publicAddress,
+              signature: arguments[0].signature
             },
-            this.config
+            userLoginData.config
           )
           .then(function(response) {
-            console.log(response.data);
+            if (response.data[0] == "Success") {
+              userLoginData.state = "loggedIn";
+              showMsg(userLoginData.state);
+              userLoginData.buttonText = "Log out";
+              showButtonText();
+              userLoginData.ethAddress = address;
+              showAddress();
+              userLoginData.publicName = response.data[1];
+              getPublicName();
+              userLoginData.JWT = response.data[2];
+              // Clear Web3 wallets data for logout
+              localStorage.clear();
+            }
           })
           .catch(function(error) {
             console.error(error);
           });
       }
+    } 
+    else {
+      console.log("Error: " + response.data);
     }
-  },
-  mounted() {
-    var vm = this;
-    
-    if (window.web3) {
-      ethereum.on('accountsChanged', (_chainId) => ethNetworkUpdate());
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+} 
 
-      async function ethNetworkUpdate() {      
-        let accountsOnEnable = await web3.eth.getAccounts();
-        let address = accountsOnEnable[0];
-        address = address.toLowerCase();
-        if (vm.ethAddress != address) {
-          vm.ethAddress = address;
-          if (vm.state == "loggedIn") {
-            vm.JWT = "";
-            vm.state = "loggedOut";
-            vm.buttonText = "Log in";
-          }
-        }
-        if (vm.ethAddress != null && vm.state == "needLogInToMetaMask") {
-          vm.state = "loggedOut";
-        }
-      }
-    }
 
-  }
-});
+function getPublicName() {
+  document.getElementById('updatePublicName').value = userLoginData.publicName;
+}
+
+
+function setPublicName() {
+  let value = document.getElementById('updatePublicName').value;
+  axios.post(
+    "server/ajax.php",
+    {
+      request: "updatePublicName",
+      address: userLoginData.ethAddress,
+      JWT: userLoginData.JWT,
+      publicName: value
+    },
+    this.config
+  )
+  .then(function(response) {
+    console.log(response.data);
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+}

@@ -8,6 +8,10 @@ body {
   font-family: 'Times New Roman', Times, serif;
 }
 
+.msg {
+  display: none;
+}
+
 .msg-info {
   color: rgb(255, 115, 0);
 }
