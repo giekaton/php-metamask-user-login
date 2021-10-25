@@ -33,7 +33,7 @@ if (window.web3) {
 
 // Show current msg
 function showMsg(id) {
-  let x = document.getElementsByClassName("msg");
+  let x = document.getElementsByClassName("user-login-msg");
   let i;
   for (i = 0; i < x.length; i++) {
       x[i].style.display = 'none';

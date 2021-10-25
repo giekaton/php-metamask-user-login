@@ -8,8 +8,6 @@
 
 		<title>Passwordless User Authentication System with PHP, MetaMask, Ethereum</title>
 		<meta name="description" content="Login system for web app, built using MetaMask, JavaScript, PHP, MySQL/PostgreSQL, JWT">
-
-		<link rel="stylesheet" href="css/main.css">
 		
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
@@ -21,48 +19,42 @@
 
 	<body>
 
-		<div class="content">
+		<div style="margin: 0 auto;max-width: 600px;margin-top:100px;text-align: center;word-wrap:break-word;">
 
-			<div id="app">
+			<span style="font-size:18px;">
+				<b>Passwordless User Authentication System</b>
+				<br>
+				Sign-in with Ethereum using PHP, MetaMask, and MySQL/PostgreSQL
+			</span>
 
-				<div class="block">
-					<span style="font-size:18px;">
-						<b>Passwordless User Authentication System</b>
-						<br>
-						Sign-in with Ethereum using PHP, MetaMask, and MySQL/PostgreSQL
-					</span>
-				</div>
+			<div style="height:80px;"></div>
 
-				<div class="block" style="margin-top:100px;">
-					<div id="loggedOut" class="msg">
-						Click the button to (sign up and) login!
-					</div>
-					<div id="needMetamask" class="msg msg-info">
-						To login, first install a Web3 wallet like the <a href="https://metamask.io/" style="color:#ff7300" target="_blank">MetaMask</a> browser extension or mobile app
-					</div>
-					<div id="needLogInToMetaMask" class="msg msg-info">
-						Log in to your wallet account first!
-					</div>
-					<div id="signTheMessage" class="msg">
-						Sign the message with your wallet to authenticate
-					</div>
-					<div id="loggedIn" class="msg">
-						Successful authentication for address:<br><span id="ethAddress"></span>
-						<br><br>
-						You can set a public name for this account:<br>
-						<input type="text" placeholder="Public name" id="updatePublicName" onfocusout="setPublicName()">
-					</div>
-					<br>
-					<button onclick="userLoginOut()" id="buttonText">Log in</button>
-				</div>
-
-				<div class="block" style="margin-top:100px;">		
-					<a href="https://github.com/giekaton/php-metamask-user-login" target="_blank">
-						GitHub
-					</a>
-				</div>
-
+			<div id="loggedOut" style="display:none;" class="user-login-msg">
+				Click the button to (sign up and) login!
 			</div>
+			<div id="needMetamask" style="display:none;color: rgb(255, 115, 0);" class="user-login-msg">
+				To login, first install a Web3 wallet like the <a href="https://metamask.io/" style="color:#ff7300" target="_blank">MetaMask</a> browser extension or mobile app
+			</div>
+			<div id="needLogInToMetaMask" style="display:none;color: rgb(255, 115, 0);" class="user-login-msg">
+				Log in to your wallet account first!
+			</div>
+			<div id="signTheMessage" style="display:none;" class="user-login-msg">
+				Sign the message with your wallet to authenticate
+			</div>
+			<div id="loggedIn" style="display:none;" class="user-login-msg">
+				Successful authentication for address:<br><span id="ethAddress"></span>
+				<br><br>
+				You can set a public name for this account:<br>
+				<input type="text" placeholder="Public name" id="updatePublicName" onfocusout="setPublicName()">
+			</div>
+			<br>
+			<button onclick="userLoginOut()" id="buttonText">Log in</button>
+			
+			<div style="height:80px;"></div>
+
+			<a href="https://github.com/giekaton/php-metamask-user-login" target="_blank">
+				GitHub
+			</a>
 
 		</div>
 
