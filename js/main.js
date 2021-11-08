@@ -7,6 +7,9 @@ let userLoginData = {
   config: { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
 }
 
+if (typeof(backendPath) == 'undefined') {
+  var backendPath = '';
+}
 
 if (window.web3) {
   ethereum.on('accountsChanged', (_chainId) => ethNetworkUpdate());
@@ -40,7 +43,6 @@ function showMsg(id) {
   }
   document.getElementById(id).style.display = 'block';
 }
-showMsg(userLoginData.state);
 
 
 // Show current address
@@ -53,11 +55,10 @@ function showAddress() {
 function showButtonText() {
   document.getElementById('buttonText').innerHTML = userLoginData.buttonText;
 }
-showButtonText();
 
 
 async function userLoginOut() {
-  if(userLoginData.state == "loggedOut") {
+  if(userLoginData.state == "loggedOut" || userLoginData.state == "needMetamask") {
     await onConnectLoadWeb3Modal();
   }
   if (web3ModalProv) {
@@ -104,7 +105,7 @@ async function userLogin() {
   showMsg(userLoginData.state);
 
   axios.post(
-    "server/ajax.php",
+    backendPath+"server/ajax.php",
     {
       request: "login",
       address: address
@@ -136,7 +137,7 @@ async function userLogin() {
       function handleAuthenticate({ publicAddress, signature }) {
         axios
           .post(
-            "server/ajax.php",
+            backendPath+"server/ajax.php",
             {
               request: "auth",
               address: arguments[0].publicAddress,
@@ -182,7 +183,7 @@ function getPublicName() {
 function setPublicName() {
   let value = document.getElementById('updatePublicName').value;
   axios.post(
-    "server/ajax.php",
+    backendPath+"server/ajax.php",
     {
       request: "updatePublicName",
       address: userLoginData.ethAddress,
