@@ -11,7 +11,19 @@ if (typeof(backendPath) == 'undefined') {
   var backendPath = '';
 }
 
-if (window.web3) {
+
+// https://medium.com/valist/how-to-connect-web3-js-to-metamask-in-2020-fee2b2edf58a
+const ethEnabled = async () => {
+  if (window.ethereum) {
+    await window.ethereum.send('eth_requestAccounts');
+    window.web3 = new Web3(window.ethereum);
+    // return true;
+    ethInit();
+  }
+  return false;
+}
+
+function ethInit() {
   ethereum.on('accountsChanged', (_chainId) => ethNetworkUpdate());
 
   async function ethNetworkUpdate() {      
