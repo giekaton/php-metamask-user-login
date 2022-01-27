@@ -6,14 +6,13 @@
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>Passwordless User Authentication System with PHP, MetaMask, Ethereum Sign-In</title>
-		<meta name="description" content="Login system for web app, built using MetaMask, JavaScript, PHP, MySQL/PostgreSQL, JWT">
+		<title>Web3 Passwordless User Sign-In with PHP, MetaMask, Ethereum</title>
+		<meta name="description" content="User authentication system for web apps, built with MetaMask, PHP, JavaScript, MySQL/PostgreSQL, JWT">
 		
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 		
 		<script type="text/javascript" src="https://unpkg.com/web3modal@1.9.0/dist/index.js"></script>
-		<script type="text/javascript" src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
 		<script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"></script>
 	</head>
 
@@ -23,7 +22,7 @@
 
 			<div style="text-align:center;word-wrap:break-word;">
 				<span style="font-size:19px;">
-					<b>Passwordless User Authentication System</b>
+					<b>Web3 Passwordless User Authentication System</b>
 				</span>
 				<div style="height:5px;"></div>
 				<span style="font-size:16px;">
@@ -62,8 +61,12 @@
 
 		</div>
 
-		<script src="js/main.js?v=009"></script>
-		<script src="js/web3-modal.js?v=001"></script>
+		<script>
+			// If this package is in a subfolder, define the backend path
+			// backendPath = "php-metamask-user-login/";
+		</script>
+		<script src="frontend/web3-login.js?v=009"></script>
+		<script src="frontend/web3-modal.js?v=001"></script>
 
 	</body>
 

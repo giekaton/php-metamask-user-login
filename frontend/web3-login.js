@@ -117,7 +117,7 @@ async function userLogin() {
   showMsg(userLoginData.state);
 
   axios.post(
-    backendPath+"server/ajax.php",
+    backendPath+"backend/server.php",
     {
       request: "login",
       address: address
@@ -149,7 +149,7 @@ async function userLogin() {
       function handleAuthenticate({ publicAddress, signature }) {
         axios
           .post(
-            backendPath+"server/ajax.php",
+            backendPath+"backend/server.php",
             {
               request: "auth",
               address: arguments[0].publicAddress,
@@ -195,7 +195,7 @@ function getPublicName() {
 function setPublicName() {
   let value = document.getElementById('updatePublicName').value;
   axios.post(
-    backendPath+"server/ajax.php",
+    backendPath+"backend/server.php",
     {
       request: "updatePublicName",
       address: userLoginData.ethAddress,
