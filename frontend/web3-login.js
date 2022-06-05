@@ -7,42 +7,35 @@ let userLoginData = {
   config: { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
 }
 
+
 if (typeof(backendPath) == 'undefined') {
   var backendPath = '';
 }
 
 
-// https://medium.com/valist/how-to-connect-web3-js-to-metamask-in-2020-fee2b2edf58a
-const ethEnabled = async () => {
-  if (window.ethereum) {
-    await window.ethereum.send('eth_requestAccounts');
-    window.web3 = new Web3(window.ethereum);
-    // return true;
-    ethInit();
+// On accountsChanged
+async function ethAccountsChanged() {      
+  let accountsOnEnable = await web3.eth.getAccounts();
+  let address = accountsOnEnable[0];
+  address = address.toLowerCase();
+  if (userLoginData.ethAddress != address) {
+    userLogOut();
+    getPublicName();
   }
-  return false;
+  if (userLoginData.ethAddress != null && userLoginData.state == "needLogInToMetaMask") {
+    userLoginData.state = "loggedOut";
+  }
 }
 
-function ethInit() {
-  ethereum.on('accountsChanged', (_chainId) => ethNetworkUpdate());
-
-  async function ethNetworkUpdate() {      
-    let accountsOnEnable = await web3.eth.getAccounts();
-    let address = accountsOnEnable[0];
-    address = address.toLowerCase();
-    if (userLoginData.ethAddress != address) {
-      userLoginData.ethAddress = address;
-      showAddress();
-      if (userLoginData.state == "loggedIn") {
-        userLoginData.JWT = "";
-        userLoginData.state = "loggedOut";
-        userLoginData.buttonText = "Log in";
-      }
-    }
-    if (userLoginData.ethAddress != null && userLoginData.state == "needLogInToMetaMask") {
-      userLoginData.state = "loggedOut";
-    }
-  }
+function userLogOut() {
+  userLoginData.state = "loggedOut";
+  userLoginData.ethAddress = "";
+  userLoginData.buttonText = "Log in";
+  showButtonText();
+  userLoginData.publicName = "";
+  userLoginData.JWT = "";
+  document.getElementById('loggedIn').style.display = 'none';
+  document.getElementById('loggedOut').style.display = 'block';
 }
 
 
@@ -74,7 +67,6 @@ async function userLoginOut() {
     await onConnectLoadWeb3Modal();
   }
   if (web3ModalProv) {
-    window.web3 = web3ModalProv;
     try {
       userLogin();
     } catch (error) {
@@ -105,7 +97,7 @@ async function userLogin() {
     showMsg(userLoginData.state);
     return;
   }
-  let accountsOnEnable = await web3.eth.getAccounts();
+  let accountsOnEnable = await ethereum.request({ method: 'eth_accounts' });
   let address = accountsOnEnable[0];
   address = address.toLowerCase();
   if (address == null) {
