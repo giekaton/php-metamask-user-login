@@ -63,6 +63,8 @@ function showButtonText() {
 
 
 async function userLoginOut() {
+  clearProvider();
+  
   if(userLoginData.state == "loggedOut" || userLoginData.state == "needMetamask") {
     await onConnectLoadWeb3Modal();
   }

@@ -61,3 +61,23 @@ async function onConnectLoadWeb3Modal() {
   
   await refreshAccountData();
 }
+
+
+// Clear previous provider to re-open walletconnect dialog on mobiles
+async function clearProvider() {
+  if (typeof(provider) != 'undefined') {
+    console.log("Killing the wallet connection", provider);
+
+    if(provider.close) {
+      await provider.close();
+
+      await web3Modal.clearCachedProvider();
+      provider = null;
+    }
+
+    selectedAccount = null;
+  } 
+}
+
+// Clear cached provider
+clearProvider();
