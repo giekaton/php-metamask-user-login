@@ -4,7 +4,7 @@ let userLoginData = {
   buttonText: "Log in",
   publicName: "",
   JWT: "",
-  config: { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+  config: { headers: { "Content-Type": "application/json" } }
 }
 
 
